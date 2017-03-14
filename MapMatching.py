@@ -14,18 +14,11 @@ def calculateTheta(P1, P2):
 	# ind = np.where(np.isnan(delta))
 	# print(delta[ind])
 	ind_t = np.where((delta[:,0] < 0) & (delta[:,1] >= 0))[0]
-<<<<<<< HEAD
-	ind_f = np.where((~((delta[:,0] < 0) & (delta[:,1] >= 0))) & (delta[:,0] != 0))[0]
-	theta[ind_t] = (2.5*pi - arctan(delta[ind_t,1]/delta[ind_t,0])) * 180./pi
-	theta[ind_f] = (0.5*pi - arctan(delta[ind_f,1]/delta[ind_f,0])) * 180./pi
-
-=======
 	ind_f = np.where(~((delta[:,0] < 0) & (delta[:,1] >= 0)))[0]
 	# ind_f = np.where((~((delta[:,0] < 0) & (delta[:,1] >= 0))) & (delta[:,0] != 0))[0]
 	theta[ind_t] = (2.5*pi - arctan(delta[ind_t,1],delta[ind_t,0])) * 180./pi
 	theta[ind_f] = (0.5*pi - arctan(delta[ind_f,1],delta[ind_f,0])) * 180./pi
 	
->>>>>>> refs/remotes/dakshaau/master
 	# ind = np.where(np.isnan(theta))[0]
 	# # print(ind)
 
@@ -57,7 +50,7 @@ def calculatePD(P1, P2, P3):
 	_mu[ind] = x[ind]/p1_p2[ind]
 	p = P1 + np.vstack((_mu,_mu)).T*(P2-P1)
 	pi = np.pi
-
+	
 	R = p*(pi/180.)
 	R3 = p3*(pi/180.)
 	ab = R3-R
@@ -145,7 +138,7 @@ def MapMatching(p_id, d_t, p_x, p_y, slots, l_id, P1, P2, p_speed, p_head, theta
 	prog = 0.
 	# print('Completed: {:.2f}'.format(prog),end=' ')
 	tot = len(slots)
-
+	
 	for j,k in enumerate(slots):
 		# print(slots[k])
 		if os.path.exists('slot_cand/{}.json'.format(k)):
@@ -160,10 +153,10 @@ def MapMatching(p_id, d_t, p_x, p_y, slots, l_id, P1, P2, p_speed, p_head, theta
 			x = TTP((p_x[ind], p_y[ind]), l_id, P1, P2, p_speed[ind], p_head[ind], theta)
 			cand[i] = x
 			# prog = (y/(float(tot)-1.)) * 100
-			# print('\rCompleted : {:.2f}%'.format(prog),end=' ')
+			# print('\rCompleted : {:.2f}%'.format(prog),end=' ')	
 		# break
 		prog = (j/(float(tot)-1.)) * 100
-		# print('Creating {}.json'.format(k))
+		# print('Creating {}.json'.format(k)) 
 		print('\rCompleted : {:.2f}%, Process: {}'.format(prog, Pname),end=' ')
 		json.dump(cand,open('slot_cand/{}.json'.format(k),'w'))
 		del cand
@@ -201,13 +194,9 @@ if __name__ == '__main__':
 	l_id, l_x, l_y = loadLinkLatLong(dat)
 	p_speed = loadProbeSpeed(dat)
 	p_head = loadProbeHeading(dat)
-<<<<<<< HEAD
-
-=======
 	# linkGraph = loadLink(dat)[1]
 	dot = loadLinkDOT(dat)
 	l_id, P1, P2 = createP1P2(l_id, l_x, l_y, dot)
->>>>>>> refs/remotes/dakshaau/master
 
 	# l_id, l_x, l_y = getLinkXYArray(l_x, l_y)
 
@@ -237,7 +226,7 @@ if __name__ == '__main__':
 	# HE = calculateHE(theta, 45.)
 
 	# print(HE[:10])
-
+	
 	# pd = calculatePD(P1, P2, (51.60, 8.90))
 
 	# print(pd[:10])
@@ -262,17 +251,7 @@ if __name__ == '__main__':
 	''' Multiprocessing : Creating 4 Processes '''
 	x = len(slots)       ## This is just for dividing the data between multiple systems
 	part = int(x/4)
-<<<<<<< HEAD
-	slots = OrderedDict(sorted(list(slots.items()), key=lambda x: x[0])[2*part:3*part])
-	x = len(slots)
-	part = int(x/3)
-	slots = OrderedDict(list(slots.items())[2*part:])
-	x = len(slots)
-	part = int(x/3)
-	slots = OrderedDict(list(slots.items())[2*part:])
-=======
 	slots = OrderedDict(sorted(list(slots.items()), key=lambda x: x[0]))
->>>>>>> refs/remotes/dakshaau/master
 
 	x = len(slots)
 	print('Total number of slots: {}'.format(x))
@@ -281,7 +260,7 @@ if __name__ == '__main__':
 	t2 = Process(target = MapMatching, args=(p_id, d_t, p_x, p_y, OrderedDict(list(slots.items())[part : 2*part]), l_id, P1, P2, p_speed, p_head, theta, 'P2'))
 	t3 = Process(target = MapMatching, args=(p_id, d_t, p_x, p_y, OrderedDict(list(slots.items())[2*part : 3*part]), l_id, P1, P2, p_speed, p_head, theta, 'P3'))
 	t4 = Process(target = MapMatching, args=(p_id, d_t, p_x, p_y, OrderedDict(list(slots.items())[3*part:]), l_id, P1, P2, p_speed, p_head, theta, 'P4'))
-
+	
 	t1.start()
 	t2.start()
 	t3.start()
